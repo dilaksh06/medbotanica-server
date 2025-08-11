@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+beanie
+motor
+pydantic
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pillow
+boto3         # optional, S3
