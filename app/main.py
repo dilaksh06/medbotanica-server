@@ -1,9 +1,12 @@
-# app/main.py
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Annotated
+
 from app.db import init_db
 from app.routers import auth, predict, detections
 from app.core.config import settings
+from app.models.user import User
+from app.dependencies import get_current_user
 
 # ------------------- App Initialization ------------------- #
 app = FastAPI(
@@ -44,3 +47,14 @@ def root():
     Simple health check endpoint.
     """
     return {"msg": "MedBotanica API running"}
+
+# ------------------- New User Endpoint ------------------- #
+# This new endpoint uses the `get_current_user` dependency to protect the route.
+# A valid JWT token is required to access this endpoint, and it returns the
+# details of the authenticated user.
+@app.get("/users/me", response_model=User, summary="Get current user")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    """
+    Retrieve the current authenticated user's information.
+    """
+    return current_user

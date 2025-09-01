@@ -5,23 +5,53 @@ from typing import Optional
 from passlib.context import CryptContext
 from jose import jwt
 
+# It's a good practice to import settings to centralize configuration
 from app.core.config import settings
 
+# Initialize a context for password hashing with the bcrypt algorithm.
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
-    """Hash a plain password."""
+    """
+    Hashes a plain password using the configured CryptContext.
+    
+    Args:
+        password: The plaintext password string to be hashed.
+
+    Returns:
+        The hashed password string.
+    """
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a plain password against its hashed version."""
+    """
+    Verifies a plaintext password against a hashed password.
+    
+    Args:
+        plain_password: The plaintext password string to verify.
+        hashed_password: The hashed password string from the database.
+        
+    Returns:
+        True if the passwords match, False otherwise.
+    """
     return pwd_context.verify(plain_password, hashed_password)
 
-def create_access_token(subject: str, expires_delta: Optional[int] = settings.jwt_exp_minutes) -> str:
+def create_access_token(subject: str, expires_delta: Optional[int] = None) -> str:
     """
-    Creates a JWT access token for a given user subject.
-    This function now correctly accepts 'subject' as an argument.
+    Creates a JWT access token for a given subject (e.g., a user ID).
+    
+    Args:
+        subject: The data to be encoded in the JWT's 'sub' claim.
+        expires_delta: Optional time in minutes for the token to expire. 
+                       Defaults to the value in settings if not provided.
+
+    Returns:
+        The encoded JWT as a string.
     """
+    # Use the expiration time from settings if not explicitly provided
+    if expires_delta is None:
+        expires_delta = settings.jwt_exp_minutes
+
     to_encode = {"sub": str(subject)}
     expire = datetime.utcnow() + timedelta(minutes=expires_delta)
     to_encode.update({"exp": expire})
