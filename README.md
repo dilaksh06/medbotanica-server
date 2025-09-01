@@ -40,3 +40,9 @@ Pull requests are welcome. For major changes, please open an issue first.
 ## License
 
 This project is licensed under the MIT License.
+
+ python -m venv venv
+ venv\Scripts\activate
+ pip install -r requirements.txt
+uvicorn app.main:app --reload
+
