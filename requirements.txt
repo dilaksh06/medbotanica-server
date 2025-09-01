@@ -9,5 +9,5 @@ python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 pillow
-boto3         # optional, S3
+boto3         # optional, S3
 aiofiles
