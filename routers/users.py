@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+# routers/users.py
+from fastapi import APIRouter
 
-app=FastAPI()
+app = APIRouter()  # <-- router, not FastAPI
 
 @app.get("/user/login")
 def login_user():
