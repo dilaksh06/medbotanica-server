@@ -1,32 +1,38 @@
 from datetime import datetime
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 from beanie import Document
-from pydantic import BaseModel, EmailStr,Field
-from typing import Literal
+
 
 class User(Document):
     name: str
     email: EmailStr
     hashed_password: str
-    profile_url: str | None = None
-    role: Literal["contributor", "user"] = "user"
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Settings:
         name = "users"
+  
+# ---------------- Request Models ----------------
+class RegisterUser(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+    phone: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-class Login_user:
-    name:str
-    email:str
-    password:str
+class LoginUser(BaseModel):
+    email: EmailStr
+    password: str
 
-class Register_user:
-    name:str
-    email:str
-    hashed_password:str
-    created_at:datetime.now
-    profile_url:str
+class UpdateUser(BaseModel):
+    name: Optional[str] = None
+    hashed_password: Optional[str] = None
+    created_at: Optional[datetime] = None
 
-class Update_user:
-    name:str
-    hashed_password:str
+# ---------------- Response Model ----------------
+class UserOut(BaseModel):
+    id: str
+    name: str
+    email: EmailStr
     created_at: datetime
