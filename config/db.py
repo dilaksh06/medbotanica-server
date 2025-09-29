@@ -10,3 +10,4 @@ async def init_db_connection():
     client=AsyncIOMotorClient(settings.mongodb_uri)
     db=client[settings.mongo_dbname]
     await init_beanie(database=db,document_models=[User])
+    print("✅ MongoDB connection initialized successfully")
