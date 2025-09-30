@@ -12,7 +12,7 @@ from utils.validators import validate_email,validate_password,ensure_unique_emai
 app = APIRouter()  # <-- router, not FastAPI
 
 # Request Models
-class LoginReq(BaseModel):
+class LoginRequest(BaseModel):
     email:str
     password:str
 
@@ -66,9 +66,41 @@ async def register_user(payload:RegisterUser):
 
 
 
-@app.get("/user/login")
-def login_user():
-    return ("user login")
+
+@app.post("/user/login", response_model=LoginSuccessResponse, status_code=status.HTTP_202_ACCEPTED)
+async def login_user(payload: LoginRequest):
+    # Find user by email
+    user = await User.find_one(User.email == payload.email)
+
+    if not user or not verify_password(payload.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+
+    # Generate JWT token
+    token = create_access_token(subject=str(user.id))
+
+    # Build UserOut object
+    user_out = UserOut(
+        id=str(user.id),
+        name=user.name,
+        email=user.email,
+        created_at=user.created_at,
+    )
+
+    # Return structured response
+    return LoginSuccessResponse(
+        success=True,
+        message="Login successful",
+        data={
+            "user": user_out,
+            "token": token
+        }
+    )
+
+
+
 
 
 @app.put("/user/update")
