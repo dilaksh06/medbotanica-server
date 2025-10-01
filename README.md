@@ -49,6 +49,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 pip install --force-reinstall passlib[bcrypt]
 
 
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 
 ## notes

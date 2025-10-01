@@ -11,20 +11,14 @@ MAX_FILE_SIZE_MB = 5  # Maximum allowed file size
 
 # ------------------- User Validations ------------------- #
 async def ensure_unique_email(email: str):
-    """
-    Check if the email is already registered in the database.
-    Raises HTTPException if email exists.
-    """
+ 
     existing = await User.find_one(User.email == email)
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
 
 def validate_email(email: str):
-    """
-    Validate email format using regex.
-    Raises HTTPException if invalid.
-    """
+
     email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     if not re.match(email_regex, email):
         raise HTTPException(status_code=400, detail="Invalid email format")
@@ -50,9 +44,7 @@ def validate_password(password: str):
 
 
 def validate_phone_number(phone: str):
-    """
-    Validate phone number format: +1234567890 or 10-15 digits.
-    """
+
     phone_regex = r"^\+?\d{10,15}$"
     if not re.match(phone_regex, phone):
         raise HTTPException(status_code=400, detail="Invalid phone number format")
@@ -60,10 +52,7 @@ def validate_phone_number(phone: str):
 
 # ------------------- File Validations ------------------- #
 def validate_file_type(filename: str, allowed_extensions: Optional[List[str]] = None):
-    """
-    Validate file extension.
-    Raises HTTPException if not allowed.
-    """
+   
     if allowed_extensions is None:
         allowed_extensions = ALLOWED_EXTENSIONS
 
@@ -76,10 +65,7 @@ def validate_file_type(filename: str, allowed_extensions: Optional[List[str]] = 
 
 
 async def validate_file_size(file: UploadFile, max_size_mb: int = MAX_FILE_SIZE_MB):
-    """
-    Validate uploaded file size.
-    Raises HTTPException if file is too large.
-    """
+  
     contents = await file.read()
     size_mb = len(contents) / (1024 * 1024)
     await file.seek(0)  # reset read pointer for further processing
@@ -88,8 +74,6 @@ async def validate_file_size(file: UploadFile, max_size_mb: int = MAX_FILE_SIZE_
 
 
 async def validate_uploaded_file(file: UploadFile, allowed_extensions: Optional[List[str]] = None, max_size_mb: int = MAX_FILE_SIZE_MB):
-    """
-    Validate uploaded file object: type and size.
-    """
+  
     validate_file_type(file.filename, allowed_extensions)
     await validate_file_size(file, max_size_mb)
