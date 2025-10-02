@@ -18,7 +18,7 @@ class LoginRequest(BaseModel):
 
 # Response Models
 class LoginData(BaseModel):
-    user:User
+    user:UserOut
     token:str
 
 # full login response model
@@ -78,10 +78,8 @@ async def login_user(payload: LoginRequest):
             detail="Invalid credentials"
         )
 
-    # Generate JWT token
     token = create_access_token(subject=str(user.id))
 
-    # Build UserOut object
     user_out = UserOut(
         id=str(user.id),
         name=user.name,
@@ -89,7 +87,6 @@ async def login_user(payload: LoginRequest):
         created_at=user.created_at,
     )
 
-    # Return structured response
     return LoginSuccessResponse(
         success=True,
         message="Login successful",
