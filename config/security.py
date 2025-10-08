@@ -4,6 +4,7 @@ from typing import Optional
 
 from passlib.context import CryptContext
 from jose import jwt
+from jose import JWTError
 
 # It's a good practice to import settings to centralize configuration
 from core.config import settings
@@ -27,6 +28,8 @@ def hash_password(password: str) -> str:
         password = password_bytes.decode('utf-8', errors='ignore')
     
     return pwd_context.hash(password)
+
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verifies a plaintext password against a hashed password.
@@ -66,3 +69,32 @@ def create_access_token(subject: str, expires_delta: Optional[int] = None) -> st
         algorithm=settings.jwt_algorithm
     )
     return encoded_jwt
+
+
+
+def verify_token(token: str) -> Optional[dict]:
+    """
+    Verifies and decodes a JWT access token.
+
+    Args:
+        token: The JWT string sent by the client.
+
+    Returns:
+        The decoded payload (e.g., {'sub': 'user_id'}) if valid.
+    
+    Raises:
+        HTTPException: If the token is invalid or expired.
+    """
+    try:
+        payload = jwt.decode(
+            token,
+            settings.jwt_secret,
+            algorithms=[settings.jwt_algorithm]
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        # Token expired
+        return None
+    except JWTError:
+        # Invalid token
+        return None
