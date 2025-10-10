@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from config.db import init_db_connection  # adjust path if needed
 from routers.users import app as user_router
-
+from routers.caption import router as caption_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,7 +21,7 @@ app = FastAPI(lifespan=lifespan)
 
 # Include the user router
 app.include_router(user_router)
-
+app.include_router(caption_router)
 # Example route
 @app.get("/")
 async def root():
