@@ -9,7 +9,7 @@ class User(Document):
     email: EmailStr
     hashed_password: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
-
+    phone: Optional[str] = None
     class Settings:
         name = "users"
   
