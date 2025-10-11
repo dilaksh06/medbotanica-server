@@ -1,13 +1,13 @@
 
 
-
- python -m venv venv
- venv\Scripts\activate
- pip install -r requirements.txt
-pip install --force-reinstall passlib[bcrypt]
-
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+pip install --force-reinstall passlib[bcrypt]  (if need only)
 
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+
 
 
 ## notes
