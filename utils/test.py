@@ -1,7 +1,7 @@
 import torch
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
-
+import os
 # ✅ Hugging Face public model ID
 MODEL_ID = "dilaksh06/medbotanica"
 
