@@ -1,15 +1,19 @@
 import torch
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
+import os
 
-# ✅ Hugging Face public model ID
-MODEL_ID = "dilaksh06/medbotanica"
+# ✅ Local model directory — make sure this path is correct
+LOCAL_MODEL_PATH = "./weights/fine_tuned_blip_lemon"
 
 # --- Load model once (global) to avoid reloading on each request ---
-print(f"🔄 Loading BLIP model from Hugging Face repo {MODEL_ID} ...")
+print(f"🔄 Loading BLIP model from {LOCAL_MODEL_PATH} ...")
 try:
-    processor = BlipProcessor.from_pretrained(MODEL_ID)
-    model = BlipForConditionalGeneration.from_pretrained(MODEL_ID)
+    if not os.path.isdir(LOCAL_MODEL_PATH):
+        raise FileNotFoundError(f"Model directory not found at {LOCAL_MODEL_PATH}")
+
+    processor = BlipProcessor.from_pretrained(LOCAL_MODEL_PATH)
+    model = BlipForConditionalGeneration.from_pretrained(LOCAL_MODEL_PATH)
 
     # Optional: use GPU if available
     device = "cuda" if torch.cuda.is_available() else "cpu"
